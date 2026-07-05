@@ -23,7 +23,7 @@ class Worker extends CI_Controller
             show_error('Profile data tidak ditemukan.');
         }
 
-        $data['title'] = 'Mechanic Station Control Panel';
+        $data['title'] = 'Dashboard Mekanik';
         $data['profile'] = $profile;
         $data['parts'] = $this->Mechanic_model->get_all_spareparts();
 

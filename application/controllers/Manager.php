@@ -21,6 +21,9 @@ class Manager extends CI_Controller
         $data['parts'] = $this->Manager_model->get_all_spareparts();
         $data['mechanics'] = $this->Manager_model->get_all_mechanics();
         $data['pending_payments'] = $this->Manager_model->get_pending_payments();
+        
+       
+        $data['all_transactions'] = $this->Manager_model->get_all_transactions();
 
         $data['subview'] = 'pages/manager/dashboard';
         $this->load->view('layout/main', $data);

@@ -23,7 +23,7 @@ class User extends CI_Controller
             redirect('User/complete_profile');
         }
 
-        $data['title'] = 'Customer Dashboard';
+        $data['title'] = 'Dashboard Pelanggan';
         $data['vehicles'] = $this->User_model->fetch_my_garage($profile->id_pelanggan);
         $data['services'] = $this->User_model->get_customer_service_history($profile->id_pelanggan);
 
