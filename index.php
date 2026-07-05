@@ -1,4 +1,7 @@
 <?php
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+    $_SERVER['HTTPS'] = 'on';}
+	date_default_timezone_set('Asia/Makassar');
 /**
  * CodeIgniter
  *
@@ -53,7 +56,7 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+	define('ENVIRONMENT', 'development');
 
 /*
  *---------------------------------------------------------------
