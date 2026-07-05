@@ -188,7 +188,8 @@
                         <th class="p-4 bg-slate-50">Tanggal</th>
                         <th class="p-4 bg-slate-50">Status Perbaikan</th>
                         <th class="p-4 bg-slate-50">Status Pembayaran</th>
-                        <th class="p-4 text-right bg-slate-50">Total Billing (Rp)</th>
+                        <th class="p-4 text-right bg-slate-50">Total Transaksi (Rp)</th>
+                        
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 bg-white">
@@ -198,7 +199,10 @@
                             <td class="p-4 font-mono font-bold text-indigo-600">#TX-<?php echo $tx->id_transaksi; ?></td>
                             <td class="p-4">
                                 <div class="font-bold text-slate-900"><?php echo $tx->brand_kendaraan . ' ' . $tx->model_kendaraan; ?></div>
-                                <div class="text-[10px] text-slate-400 font-mono mt-0.5"><?php echo $tx->no_plat; ?> • Client: <?php echo $tx->nama_pelanggan; ?></div>
+                                <div class="text-[10px] text-slate-500 font-mono mt-0.5"><?php echo $tx->no_plat; ?> • Client: <?php echo $tx->nama_pelanggan; ?></div>
+                                <div class="text-[10px] text-indigo-600 font-medium mt-1">
+                                    Alamat: <span class="italic text-slate-600"><?php echo $tx->alamat ? $tx->alamat : 'Belum mengisi alamat.'; ?></span>
+                                </div>
                             </td>
                             <td class="p-4 font-medium text-slate-700">
                                 <?php echo !empty($tx->nama_mekanik) ? $tx->nama_mekanik : '<span class="text-slate-400 italic">Unassigned</span>'; ?>
@@ -227,11 +231,12 @@
                             <td class="p-4 text-right font-mono font-bold text-slate-900">
                                 Rp <?php echo number_format($tx->total_biaya, 0, ',', '.'); ?>
                             </td>
+                           
                         </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="7" class="p-4 text-center text-slate-400 italic bg-slate-50/20">No invoice statements or transaction history found inside the warehouse ledger.</td>
+                            <td colspan="7" class="p-4 text-center text-slate-400 italic bg-slate-50/20">Tidak ada detail transaksi</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

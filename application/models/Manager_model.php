@@ -27,9 +27,10 @@ class Manager_model extends CI_Model
         return $this->db->trans_status();
     }
 
-    public function get_all_transactions()
+  public function get_all_transactions()
     {
-        return $this->db->select('transaksi.*, pelanggan.nama_pelanggan, kendaraan.brand_kendaraan, kendaraan.model_kendaraan, mekanik.nama_mekanik')
+       
+        return $this->db->select('transaksi.*, pelanggan.nama_pelanggan, pelanggan.alamat, kendaraan.brand_kendaraan, kendaraan.model_kendaraan, mekanik.nama_mekanik')
                         ->from('transaksi')
                         ->join('kendaraan', 'transaksi.no_plat = kendaraan.no_plat', 'left')
                         ->join('pelanggan', 'kendaraan.id_pelanggan = pelanggan.id_pelanggan', 'left')
