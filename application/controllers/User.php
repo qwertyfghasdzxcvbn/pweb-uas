@@ -33,6 +33,10 @@ class User extends CI_Controller
 
     public function add_vehicle_process()
     {
+          $this->form_validation->set_error_delimiters(
+            '<p class="mt-1.5 text-[11px] font-normal text-rose-600 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded shadow-3xs block text-left leading-normal w-full box-border">', 
+            '</p>'
+        );
         $this->form_validation->set_rules('no_plat', 'Plate Number', 'required|is_unique[kendaraan.no_plat]|trim');
         $this->form_validation->set_rules('brand', 'Brand', 'required|trim');
         $this->form_validation->set_rules('model', 'Model', 'required|trim');
@@ -61,6 +65,10 @@ class User extends CI_Controller
 
     public function book_service_process()
     {
+          $this->form_validation->set_error_delimiters(
+            '<p class="mt-1.5 text-[11px] font-normal text-rose-600 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded shadow-3xs block text-left leading-normal w-full box-border">', 
+            '</p>'
+        );
         $user_id = $this->session->userdata('user_id');
         $profile = $this->User_model->get_profile_by_user_id($user_id);
 
@@ -130,7 +138,11 @@ class User extends CI_Controller
     }
 
     public function submit_payment_proof()
-    {
+    
+    {  $this->form_validation->set_error_delimiters(
+            '<p class="mt-1.5 text-[11px] font-normal text-rose-600 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded shadow-3xs block text-left leading-normal w-full box-border">', 
+            '</p>'
+        );
         $this->load->library('form_validation');
         $this->form_validation->set_rules('id_transaksi', 'Transaction ID', 'required|numeric');
         $this->form_validation->set_rules('proof_ref', 'Payment Reference', 'required|trim');
@@ -157,6 +169,10 @@ class User extends CI_Controller
 
     public function complete_profile_action()
     {
+          $this->form_validation->set_error_delimiters(
+            '<p class="mt-1.5 text-[11px] font-normal text-rose-600 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded shadow-3xs block text-left leading-normal w-full box-border">', 
+            '</p>'
+        );
         $this->form_validation->set_rules('no_telepon', 'Phone Number', 'required|numeric|min_length[9]');
         $this->form_validation->set_rules('alamat', 'Home Address', 'required|trim');
 

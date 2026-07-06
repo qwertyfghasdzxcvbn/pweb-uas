@@ -79,14 +79,14 @@
                                         class="flex gap-1.5">
                                         <input type="hidden" name="id_transaksi" value="<?php echo $job->id_transaksi; ?>">
 
-                                    
+
                                         <input type="text" list="parts-catalog-<?php echo $job->id_transaksi; ?>"
                                             name="nama_part_display" placeholder="Cari Komponen" required
                                             class="border border-slate-300 rounded px-2 py-1 text-xs focus:outline-indigo-600 w-36 bg-white text-slate-900 font-medium">
 
                                         <datalist id="parts-catalog-<?php echo $job->id_transaksi; ?>">
                                             <?php foreach ($parts as $item): ?>
-                                            
+
                                                 <option value="<?php echo $item->nama_part; ?>">
                                                     (Stok: <?php echo $item->stok; ?> | Rp
                                                     <?php echo number_format($item->harga_jual, 0, ',', '.'); ?>)
@@ -94,7 +94,7 @@
                                             <?php endforeach; ?>
                                         </datalist>
 
-                                        <input type="number" name="qty" placeholder="qty" required
+                                        <input type="number" name="qty" placeholder="qty" required min="1"
                                             class="border border-slate-300 rounded text-center text-xs w-10 py-1 bg-white text-slate-900">
                                         <button type="submit"
                                             class="bg-slate-900 text-white font-bold px-2 rounded hover:bg-slate-800 transition cursor-pointer">Simpan</button>
@@ -119,22 +119,33 @@
                                     <?php else: ?>
 
 
-                                        <form action="<?php echo base_url('Worker/update_repair_progress'); ?>" method="POST"
-                                            class="inline-flex gap-1">
+                                        <form action="<?php echo base_url('Worker/log_used_sparepart'); ?>" method="POST"
+                                            class="flex gap-1.5 items-center">
                                             <input type="hidden" name="id_transaksi" value="<?php echo $job->id_transaksi; ?>">
-                                            <input type="text" name="detail_progres" placeholder="Detail Perbaikan" required
-                                                class="border border-slate-300 rounded px-2 py-1 text-[11px] focus:outline-indigo-600 w-32 bg-white text-slate-900">
-                                            <select name="status_servis"
-                                                class="rounded border border-slate-300 px-1 py-1 text-[11px] bg-white text-slate-700 font-bold focus:outline-indigo-600">
-                                                <option value="Inspeksi Awal" <?php echo ($job->status_servis == 'Inspeksi Awal') ? 'selected' : ''; ?>>Inspeksi Awal</option>
-                                                <option value="Pengerjaan" <?php echo ($job->status_servis == 'Pengerjaan') ? 'selected' : ''; ?>>Pengerjaan</option>
-                                                <option value="Selesai">Selesai</option>
-                                                <option value="Dibatalkan">Dibatalkan</option>
-                                            </select>
-                                            <button type="submit"
-                                                class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-2 py-1 rounded transition cursor-pointer">Simpan</button>
-                                        </form>
 
+                                            <input type="text" list="parts-catalog-<?php echo $job->id_transaksi; ?>"
+                                                name="nama_part_display" id="part-input-<?php echo $job->id_transaksi; ?>"
+                                                oninput="updateMaxQty(<?php echo $job->id_transaksi; ?>)"
+                                                placeholder="Cari Komponen" required
+                                                class="border border-slate-300 rounded px-2 py-1 text-xs focus:outline-indigo-600 w-36 bg-white text-slate-900 font-medium">
+
+                                            <datalist id="parts-catalog-<?php echo $job->id_transaksi; ?>">
+                                                <?php foreach ($parts as $item): ?>
+                                                    <option value="<?php echo $item->nama_part; ?>"
+                                                        data-stok="<?php echo $item->stok; ?>">
+                                                        Stok: <?php echo $item->stok; ?> | Rp
+                                                        <?php echo number_format($item->harga_jual, 0, ',', '.'); ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </datalist>
+
+                                            <input type="number" name="qty" id="qty-input-<?php echo $job->id_transaksi; ?>"
+                                                placeholder="qty" min="1" required
+                                                class="border border-slate-300 rounded text-center text-xs w-10 py-1 bg-white text-slate-900">
+
+                                            <button type="submit"
+                                                class="bg-slate-900 text-white font-bold px-2 rounded hover:bg-slate-800 transition cursor-pointer self-stretch text-xs">Simpan</button>
+                                        </form>
 
                                         <a href="<?php echo base_url('Worker/delay_assignment/' . $job->id_transaksi); ?>"
                                             class="text-[11px] bg-rose-50 text-rose-600 border border-rose-200 font-bold px-2 py-1 rounded hover:bg-rose-100 transition shadow-xs cursor-pointer"
@@ -152,3 +163,28 @@
         </table>
     </div>
 </div>
+
+
+<script>
+function updateMaxQty(transaksiId) {
+    const input = document.getElementById('part-input-' + transaksiId);
+    const qtyInput = document.getElementById('qty-input-' + transaksiId);
+    const datalist = document.getElementById('parts-catalog-' + transaksiId);
+    
+    if (!input || !qtyInput || !datalist) return;
+
+    const val = input.value;
+    const options = datalist.options;
+    
+    for (let i = 0; i < options.length; i++) {
+        if (options[i].value === val) {
+            const maxStok = options[i].getAttribute('data-stok');
+            if (maxStok) {
+                qtyInput.setAttribute('max', maxStok);
+                return;
+            }
+        }
+    }
+    qtyInput.removeAttribute('max');
+}
+</script>

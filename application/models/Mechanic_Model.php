@@ -27,6 +27,10 @@ class Mechanic_model extends CI_Model {
         $this->db->order_by('transaksi.tanggal_servis', 'ASC');
         return $this->db->get()->result();
     }
+    public function get_sparepart_by_name($nama_part)
+    {
+        return $this->db->get_where('suku_cadang', ['nama_part' => $nama_part])->row();
+    }
 
     public function reschedule_delayed_job($id_transaksi) {
         $job = $this->db->get_where('transaksi', ['id_transaksi' => $id_transaksi])->row();
@@ -63,18 +67,28 @@ class Mechanic_model extends CI_Model {
         $this->db->where('id_mekanik', $id_mekanik)->update('mekanik', ['status_ketersediaan' => $status]);
     }
 
-    public function log_sparepart_usage($id_transaksi, $id_part, $qty, $current_stok, $cost_addition) {
+     public function log_sparepart_usage($id_transaksi, $id_part, $qty, $current_stok, $cost_addition) {
         $this->db->trans_start();
+
         $this->db->insert('detail_suku_cadang', [
-            'id_transaksi' => $id_transaksi,
-            'id_part' => $id_part,
+            'id_transaksi'     => $id_transaksi,
+            'id_part'          => $id_part,
             'jumlah_digunakan' => $qty
         ]);
-        $this->db->where('id_part', $id_part)->update('suku_cadang', ['stok' => ($current_stok - $qty)]);
-        $this->db->where('id_transaksi', $id_transaksi)->set('total_biaya', 'total_biaya + ' . $cost_addition, FALSE)->update('transaksi');
-        $this->db->trans_complete();
-    }
 
+        $hitung_stok_baru = (int)$current_stok - (int)$qty;
+        $this->db->where('id_part', $id_part)->update('suku_cadang', ['stok' => $hitung_stok_baru]);
+
+        $current_tx = $this->db->select('total_biaya')->get_where('transaksi', ['id_transaksi' => $id_transaksi])->row();
+        $biaya_lama = $current_tx ? (int)$current_tx->total_biaya : 0;
+
+        $biaya_baru = $biaya_lama + (int)$cost_addition;
+
+        $this->db->where('id_transaksi', $id_transaksi)->update('transaksi', ['total_biaya' => $biaya_baru]);
+
+        $this->db->trans_complete();
+        return $this->db->trans_status();
+    }
     public function process_delay_assignment($id_transaksi, $job, $target_mechanic_id) {
         $this->db->trans_start();
         $this->reschedule_delayed_job($id_transaksi);

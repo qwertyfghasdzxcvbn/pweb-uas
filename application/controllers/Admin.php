@@ -26,6 +26,7 @@ class Admin extends CI_Controller {
     }
 
     public function create_manager_process() {
+         
         $this->form_validation->set_rules('name', 'Full Name', 'required|trim');
         $this->form_validation->set_rules('email', 'Email Address', 'required|valid_email|is_unique[users.email]|trim');
         $this->form_validation->set_rules('password', 'Login Password', 'required|min_length[6]');

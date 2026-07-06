@@ -10,6 +10,10 @@ class Auth extends CI_Controller {
     }
 
     public function process_login() {
+          $this->form_validation->set_error_delimiters(
+            '<p class="mt-1.5 text-[11px] font-normal text-rose-600 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded shadow-3xs block text-left leading-normal w-full box-border">', 
+            '</p>'
+        );
         $this->form_validation->set_rules('email', 'Email', 'required|valid_email|trim');
         $this->form_validation->set_rules('password', 'Password', 'required');
 
@@ -49,6 +53,11 @@ class Auth extends CI_Controller {
     }
 
     public function process_registration() {
+        $this->form_validation->set_error_delimiters(
+            '<p class="mt-1.5 text-[11px] text-rose-600 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded shadow-3xs block text-left leading-normal w-full box-border">', 
+            '</p>'
+        );
+
         $this->form_validation->set_rules('name', 'Full Name', 'required|trim');
         $this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[users.email]|trim');
         $this->form_validation->set_rules('password', 'Password', 'required|min_length');
@@ -65,7 +74,6 @@ class Auth extends CI_Controller {
                 'role_id'  => 3 
             ];
 
-          
             $new_user_id = $this->User_model->insert_customer_user($user_payload);
 
             $session_payload = [

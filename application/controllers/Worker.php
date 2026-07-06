@@ -72,30 +72,42 @@ class Worker extends CI_Controller
         redirect('Worker/dashboard');
     }
 
-        
-    public function log_used_sparepart() 
+             public function log_used_sparepart() 
     {
         $id_transaksi = $this->input->post('id_transaksi');
         $nama_part    = $this->input->post('nama_part_display', TRUE); 
         $qty          = $this->input->post('qty', TRUE);
+
+        if (empty($qty) || $qty < 1) {
+            $this->session->set_flashdata('error', 'Jumlah suku cadang yang digunakan minimal harus 1 unit!');
+            redirect('Worker/dashboard');
+        }
 
         if (empty($nama_part)) {
             $this->session->set_flashdata('error', 'Silahkan pilih komponen terlebih dahulu!');
             redirect('Worker/dashboard');
         }
 
-       
-        $part = $this->db->get_where('suku_cadang', ['nama_part' => $nama_part])->row();
+        $part = $this->Mechanic_model->get_sparepart_by_name($nama_part);
 
         if ($part) {
+            if ($qty > $part->stok) {
+                $this->session->set_flashdata('error', '⚠️ Gagal: Jumlah input (' . $qty . ') melebihi sisa stok gudang yang tersedia (' . $part->stok . ' unit)!');
+                redirect('Worker/dashboard');
+            }
+
             if ($part->stok >= $qty) {
-                $cost_addition = $part->harga_jual * $qty;
                 
-              
+                // KUNCI SAKTI: Ubah nilai decimal database langsung menjadi Integer bulat (Rp 200.000,00 -> Rp 200.000) [▲]
+                $harga_bulat = (int)$part->harga_jual;
+                
+                // Lakukan perkalian murni antar angka bulat [▲]
+                $cost_addition = $harga_bulat * (int)$qty;
+                
                 $this->Mechanic_model->log_sparepart_usage($id_transaksi, $part->id_part, $qty, $part->stok, $cost_addition);
                 $this->session->set_flashdata('success', 'Penggunaan sparepart berhasil di rekam');
             } else {
-                $this->session->set_flashdata('error', 'Inventory stok untuk ' . $part->nama_part . ' sudah habis!');
+                $this->session->set_flashdata('error', 'Inventory stok sudah habis!');
             }
         } else {
             $this->session->set_flashdata('error', 'Komponen tidak ditemukan! Pastikan Anda memilih dari daftar.');

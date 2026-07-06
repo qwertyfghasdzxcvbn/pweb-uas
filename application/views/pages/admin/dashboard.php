@@ -74,7 +74,7 @@
 
         </div>
         <!-- BAGIAN ADMIN DETAIL SEMUA AKUN KECUALI ADMIN-->
-        <div class="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden lg:col-span-2">
+        <div class="bg-white border border-slate-200 rounded-xl shadow-xs overflow-hidden lg:col-span-2 max-h-100 overflow-y-auto overflow-x-auto scrollbar-thin">
             <div class="p-4 bg-slate-50/50 border-b border-slate-200">
                 <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Daftar Staff & Pelanggan</h2>
             </div>
